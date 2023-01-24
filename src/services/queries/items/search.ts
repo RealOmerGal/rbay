@@ -13,10 +13,12 @@ export const searchItems = async (term: string, size: number = 5) => {
     // Look at cleaned and make sure its valid
     if (cleaned === '') return []; //Invalid
 
+    //Give the name field heavier weight
+    const query = `(@name:(${cleaned}) => {$weight:5.0}) | (@description:(${cleaned}))`;
     // Use the client to do a actual search
     const results = await client.ft.search(
         itemsIndexKey(),
-        cleaned, {
+        query, {
         LIMIT: {
             from: 0,
             size
